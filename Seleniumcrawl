@@ -1,0 +1,163 @@
+package Selenium_script;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class cognicrawl1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		WebDriver d = new FirefoxDriver();
+		d.get("https://cognizant.taleo.net/careersection/indapac_itbpo_ext_career/moresearch.ftl?lang=en#");
+		d.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		
+		WebElement pagesel = d.findElement(By.className("pagerlinkselected"));
+		//.//*[@id='requisitionListInterface.pagerDivID5280.P1']
+		
+		List <WebElement> title = d.findElements(By.xpath(".//*[@class='titlelink']"));
+		d.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		List <WebElement> locate = d.findElements(By.xpath(".//*[@class='morelocation']"));
+		d.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		List <WebElement> date = d.findElements(By.xpath(".//*[contains(@id, 'requisitionListInterface.reqPostingDate')]"));
+		try{
+			
+		FileOutputStream fos = new FileOutputStream(new File("cognijobs.xls"));
+
+        HSSFWorkbook workbook = new HSSFWorkbook();
+
+        HSSFSheet worksheet = workbook.createSheet("cogjoblists");
+
+        HSSFRow row1 = worksheet.createRow(0);
+        row1.createCell(0).setCellValue(new HSSFRichTextString("title"));
+        row1.createCell(1).setCellValue(new HSSFRichTextString("location"));
+        row1.createCell(2).setCellValue(new HSSFRichTextString("date"));
+        row1.createCell(3).setCellValue(new HSSFRichTextString("reqid"));
+        
+        System.out.println(title.size());
+        //System.out.println(pagesel.getAttribute("id"));
+        try{
+				
+				//WebElement tit = x.next();
+				for(int i = 0; i< title.size(); i++){
+					
+					//System.out.println(i);
+					//if(pagesel.getAttribute("class")== "pagerlinkselected"){
+						
+						WebElement tit = d.findElement(By.xpath(".//*[@id='requisitionListInterface.reqTitleLinkAction.row" + (i+1) + "']"));
+						System.out.println(tit.getText());
+						Cell curr = worksheet.createRow(i+1).createCell(0);
+						curr.setCellValue(new HSSFRichTextString(tit.getText()));
+						d.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+						
+				}
+				workbook.write(fos);
+						//For location
+				for(int i = 0; i< title.size(); i++){		
+					
+						WebElement loca = d.findElement(By.xpath(".//*[@id='requisitionListInterface.reqBasicLocation.row" + (i+1) + "']"));
+						System.out.println(loca.getText());
+						Cell curr1 = worksheet.createRow(i+1).createCell(1);
+						curr1.setCellValue(new HSSFRichTextString(loca.getText()));
+						d.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+				
+				}
+				workbook.write(fos);
+				
+				for(int i = 0; i< title.size(); i++){		
+					
+					WebElement dat = d.findElement(By.xpath(".//*[@id='requisitionListInterface.reqPostingDate.row" + (i+1) + "']"));
+					//.//*[@id='requisitionListInterface.reqPostingDate.row25']
+					System.out.println(dat.getText());
+					Cell curr2 = worksheet.createRow(i+1).createCell(2);
+					curr2.setCellValue(new HSSFRichTextString(dat.getText()));
+					d.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+			
+				}
+				
+				workbook.write(fos);
+				
+				for(int i = 0; i< title.size(); i++){		
+					
+					WebElement req = d.findElement(By.xpath(".//*[@id='requisitionListInterface.reqContestNumberValue.row" + (i+1) + "']"));
+					//.//*[@id='requisitionListInterface.reqPostingDate.row25']
+					System.out.println(req.getText());
+					Cell curr3 = worksheet.createRow(i+1).createCell(3);
+					curr3.setCellValue(new HSSFRichTextString(req.getText()));
+					d.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+			
+				}
+				
+				workbook.write(fos);
+				
+			//page selected - .//*[@id='requisitionListInterface.pagerDivID5280.P1']	
+		
+		}
+		
+		catch(StaleElementReferenceException e){
+			e.printStackTrace();
+		} 
+        catch(NoSuchElementException e){
+			e.printStackTrace();
+		}
+
+        workbook.write(fos);
+
+        fos.close();
+        }
+		catch(FileNotFoundException e){
+			e.printStackTrace();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		 
+		/*for(WebElement x: title){
+			
+			System.out.println(x.getText());
+			
+		}*/
+		/*int sizeloc = locate.size();
+		for(int y= 0; y <= sizeloc; y++){
+			System.out.println(((WebElement) locate).getText());
+			
+		}*/
+		/*try{
+		Iterator<WebElement> y = locate.iterator();
+		while(y.hasNext()){
+			WebElement loca = y.next();
+			System.out.println(loca.getText());
+			}
+		}
+		catch(StaleElementReferenceException e){
+			e.printStackTrace();
+		}
+		
+		/*for(WebElement y: locate){
+			System.out.println(y.getText());
+			d.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		} 
+		for(WebElement z: date){
+			System.out.println(z.getText());
+			d.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		}*/
+	}
+
+}
